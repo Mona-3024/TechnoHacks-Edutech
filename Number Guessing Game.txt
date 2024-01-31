@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+#define LOWER_BOUND 1
+#define UPPER_BOUND 100
+#define MAX_ATTEMPTS 5
+int main() {
+    srand(time(NULL));
+    int rounds = 0;
+    int totalAttempts = 0;
+    printf("WELCOME TO THE NUMBER GUESSING GAME\n");
+    char playAgain[4];
+    do {
+        int lower = LOWER_BOUND;
+        int upper = UPPER_BOUND;
+        int target = rand() % (upper - lower + 1) + lower;
+        int attempts = 0;
+        bool guessed = false;
+        printf("\nROUND %d: I HAVE GENERATED A NUMBER BETWEEN %d AND %d. CAN YOU GUESS IT?\n", rounds + 1, lower, upper);
+        while (attempts < MAX_ATTEMPTS) 
+        {
+            int user;
+            printf("ENTER YOUR GUESS: ");
+            scanf("%d", &user);
+            attempts++;
+            if (user == target) 
+            {
+                guessed = true;
+                break;
+            } 
+            else if (user < target) 
+            {
+                printf("TOO LOW! TRY AGAIN.\n");
+            } 
+            else 
+            {
+                printf("TOO HIGH! TRY AGAIN.\n");
+            }
+        }
+        if (guessed) 
+        {
+            printf("CONGRATULATIONS! YOU GUESSED THE NUMBER IN %d ATTEMPTS.\n", attempts);
+            totalAttempts += attempts;
+        } 
+        else 
+        {
+            printf("SORRY, YOU'VE REACHED THE MAXIMUM NUMBER OF ATTEMPTS. THE CORRECT NUMBER WAS: %d\n", target);
+        }
+        rounds++;
+        printf("DO YOU WANT TO PLAY ANOTHER ROUND? (YES/NO): ");
+        scanf("%c", playAgain);
+    } 
+    while (playAgain[0] == 'Y' || playAgain[0] == 'y');
+    if (rounds > 0) 
+    {
+        double averageAttempts = (double)totalAttempts / rounds;
+        printf("THANKS FOR PLAYING! YOUR FINAL SCORE IS: %d ROUNDS PLAYED, AVERAGE ATTEMPTS PER ROUND: %.2f\n", rounds, averageAttempts);
+    } 
+    else 
+    {
+        printf("THANKS FOR PLAYING!\n");
+    }
+    return 0;
+}
