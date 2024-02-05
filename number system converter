@@ -1,0 +1,170 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+long DtoB(int D) 
+{
+    long B = 0, base = 1;
+    while (D > 0) {
+        B += (D % 2) * base;
+        D /= 2;
+        base *= 10;
+    }
+    return B;
+}
+
+long DtoO(int D) 
+{
+    long O = 0, base = 1;
+    while (D > 0) 
+    {
+        O += (D % 8) * base;
+        D /= 8;
+        base *= 10;
+    }
+    return O;
+}
+
+char* DtoH(int D) 
+{
+    char H[20];
+    int i = 0;
+    while (D > 0) 
+    {
+        int rem = D % 16;
+        if (rem < 10) 
+        {
+            H[i] = rem + '0';
+        } 
+        else 
+        {
+            H[i] = rem - 10 + 'A';
+        }
+        i++;
+        D /= 16;
+    }
+    H[i] = '\0';
+    
+    // Allocate memory for the string and copy it
+    char* result = strdup(H);
+    
+    return result; // Return the dynamically allocated string
+}
+
+int BtoD(long B) 
+{
+	int D = 0, base = 1;
+
+	while (B > 0)
+	{
+		D += (B %10)*base ;
+		B /=10 ;
+		base*=2 ;
+	}
+
+	return D ;
+}
+
+int OtoD(long O)
+{
+	int dec_val=0 , base=1 , rem;
+
+	while(O>0)
+	{
+		rem=O%10 ;
+		dec_val+=rem*base ;
+		O/=10 ;
+		base*=8 ;
+	}
+	return dec_val ;
+
+}
+
+int HtoD(char* H)
+{
+	int len=strlen(H);
+	int hex_val=0;
+
+	for(int i=0;i<len;i++)
+	{
+			if(H[i]>='0' && H[i]<='9')
+				hex_val=hex_val*16+(H[i]-48);
+			else if(H[i]>='a' && H[i]<='f')
+				hex_val=hex_val*16+(H[i]-87);
+			else if(H[i]>='A' && H[i]<='F')
+				hex_val=hex_val*16+(H[i]-55);
+	}
+	return hex_val;
+
+}
+
+int main() 
+{
+	int CHOICE, num;
+
+	do {
+	    printf("\nCHOOSE CONVERSION:\n");
+	    printf("1. DECIMAL TO BINARY\n");
+	    printf("2. DECIMAL TO OCTAL\n");
+	    printf("3. DECIMAL TO HEXADECIMAL\n");
+	    printf("4. BINARY TO DECIMAL\n");
+	    printf("5. OCTAL TO DECIMAL\n");
+	    printf("6. HEXADECIMAL TO DECIMAL\n");
+	    printf("7. EXIT\n");
+
+	    printf("\nENTER CHOICE (1-7): ");
+	    scanf("%d", &CHOICE);
+
+	    switch(CHOICE)
+	    {
+
+	        case(1):
+	            printf("\nENTER THE DECIMAL NUMBER: ");
+	            scanf("%d", &num);
+	            printf("\nBINARY: %ld",DtoB(num));
+	            break;
+
+	        case(2):
+	            printf("\nENTER THE DECIMAL NUMBER: ");
+	            scanf("%d", &num);
+	            printf("\nOCTAL: %ld",DtoO(num));
+	            break;
+
+	        case(3):
+	            printf("\nENTER THE DECIMAL NUMBER: ");
+	            scanf("%d", &num);
+	            printf("\nHEXADECIMAL: %s",DtoH(num));
+	            break;
+
+	        case(4):
+	             printf("\nENTER THE BINARY NUMBER: ");
+	             scanf("%ld",&num);
+	             printf("\nDECIMAL: %d",BtoD(num));
+	             break;
+
+	        case(5):
+	             printf("\nENTER THE OCTAL NUMBER: ");
+	             scanf("%ld",&num);
+	             printf("\nDECIMAL :%d",OtoD(num));
+	             break;
+
+	        case(6):
+	              char hex[20];
+	              printf("\nENTER THE HEXADECIMAL NUMBER :");
+	              scanf("%s",&hex);
+
+	              printf("DECIMAL :%d ",HtoD(hex));
+	              break;
+
+
+	        default:
+	           if(CHOICE ==7)
+	              	printf("EXIT.\n");
+
+	       }
+
+	   } while (CHOICE !=7);
+
+	   return(0);
+
+}
