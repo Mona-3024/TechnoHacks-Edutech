@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct 
+{
+    double balance;
+} BankAccount;
+BankAccount createAccount(double initialBalance) 
+{
+    BankAccount account;
+    account.balance = initialBalance;
+    return account;
+}
+double getBalance(BankAccount *account) {
+    return account->balance;
+}
+void deposit(BankAccount *account, double amount) 
+{
+    if (amount > 0) 
+    {
+        account->balance += amount;
+        printf("DEPOSIT SUCCESSFUL. NEW BALANCE: %.2lf\n", account->balance);
+    } 
+    else 
+    {
+        printf("INVALID DEPOSIT AMOUNT. PLEASE ENTER A POSITIVE VALUE.\n");
+    }
+}
+void withdraw(BankAccount *account, double amount) 
+{
+    if (amount > 0 && amount <= account->balance) 
+    {
+        account->balance -= amount;
+        printf("WITHDRAWAL SUCCESSFUL. NEW BALANCE: %.2lf\n", account->balance);
+    } 
+    else 
+    {
+        printf("INVALID WITHDRAWAL AMOUNT OR INSUFFICIENT FUNDS.\n");
+    }
+}
+typedef struct 
+{
+    BankAccount userAccount;
+} ATM;
+ATM createATM(BankAccount userAccount) 
+{
+    ATM atm;
+    atm.userAccount = userAccount;
+    return atm;
+}
+void displayMenu() 
+{
+    printf("\nATM MENU:\n");
+    printf("1. WITHDRAW\n");
+    printf("2. DEPOSIT\n");
+    printf("3. CHECK BALANCE\n");
+    printf("4. EXIT\n");
+}
+void processOption(ATM *atm, int option) 
+{
+    switch (option) 
+    {
+        case 1: 
+        {
+            printf("ENTER WITHDRAWAL AMOUNT: ");
+            double withdrawAmount;
+            scanf("%lf", &withdrawAmount);
+            withdraw(&(atm->userAccount), withdrawAmount);
+            break;
+        }
+        case 2: 
+        {
+            printf("ENTER DEPOSIT AMOUNT: ");
+            double depositAmount;
+            scanf("%lf", &depositAmount);
+            deposit(&(atm->userAccount), depositAmount);
+            break;
+        }
+        case 3:
+            printf("CURRENT BALANCE: %.2lf\n", getBalance(&(atm->userAccount)));
+            break;
+        case 4:
+            printf("EXITING ATM. THANK YOU!\n");
+            exit(0);
+        default:
+            printf("INVALID OPTION. PLEASE CHOOSE A VALID OPTION.\n");
+    }
+}
+int main() 
+{
+    printf("ENTER INITIAL ACCOUNT BALANCE: ");
+    double initialBalance;
+    scanf("%lf", &initialBalance);
+    BankAccount userAccount = createAccount(initialBalance);
+    ATM atm = createATM(userAccount);
+    while (1) 
+    {
+        displayMenu();
+        printf("ENTER YOUR CHOICE (1-4): ");
+        int userChoice;
+        scanf("%d", &userChoice);
+        if (userChoice < 1 || userChoice > 4) {
+            printf("INVALID OPTION. PLEASE CHOOSE A VALID OPTION.\n");
+            continue;
+        }
+        processOption(&atm, userChoice);
+    }
+    return 0;
+}
