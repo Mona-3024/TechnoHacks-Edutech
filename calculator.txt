@@ -1,60 +1,62 @@
 #include <stdio.h>
-#include<stdlib.h>
-float addition(float a, float b) 
-{
+#include <stdlib.h>
+
+float addition(float a, float b) {
     return a + b;
 }
-float subtraction(float a, float b) 
-{
+
+float subtraction(float a, float b) {
     return a - b;
 }
-float multiplication(float a, float b) 
-{
+
+float multiplication(float a, float b) {
     return a * b;
 }
-float division(float a, float b) 
-{
-    if (b != 0) 
-    {
+
+float division(float a, float b) {
+    if (b != 0) {
         return a / b;
-    } 
-    else 
-    {
+    } else {
         printf("ERROR: DIVISION BY ZERO\n");
         return 0;
     }
 }
-int main() 
-{
+
+int main() {
     char choice;
     float a, b, output;
-    do{
-    printf("ENTER AN OPERATOR (+, -, *, /): ");
-    scanf("%c", &choice);
-    if(choice==s || choice==S)
-    break;
-    printf("ENTER THE INPUTS: ");
-    scanf("%f %f", &a, &b);
-    switch (choice) 
-    {
-        case '+':
-            output = addition(a, b);
+
+    do {
+        printf("ENTER AN OPERATOR (+, -, *, /) or 's' to exit: ");
+        scanf(" %c", &choice); // Added a space before %c to consume the newline character
+
+        if (choice == 's' || choice == 'S')
             break;
-        case '-':
-            output = subtraction(a, b);
-            break;
-        case '*':
-            output = multiplication(a, b);
-            break;
-        case '/':
-            output = division(a, b);
-            break;
-        default:
-            printf("ERROR: INVALID OPERATOR\n");
-            return 1; 
-    }
-    printf("RESULT: %f\n", output);
-    }
-    while(1);
-    }
+
+        printf("ENTER THE INPUTS: ");
+        scanf("%f %f", &a, &b);
+
+        switch (choice) {
+            case '+':
+                output = addition(a, b);
+                break;
+            case '-':
+                output = subtraction(a, b);
+                break;
+            case '*':
+                output = multiplication(a, b);
+                break;
+            case '/':
+                output = division(a, b);
+                break;
+            default:
+                printf("ERROR: INVALID OPERATOR\n");
+                return 1;
+        }
+
+        printf("RESULT: %f\n", output);
+
+    } while (1);
+
     return 0;
+}
