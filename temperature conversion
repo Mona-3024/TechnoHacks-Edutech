@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+double FtoC(double F) 
+{
+    return (F - 32) * 5.0 / 9.0;
+}
+double CtoF(double C) 
+{
+    return (C * 9.0 / 5.0) + 32;
+}
+int main() 
+{
+    int CHOICE;
+    double TEMP;
+    while(CHOICE!=3)
+    {
+        printf("CHOOSE CONVERSION:\n");
+        printf("1. FAHRENHEIT to CELSIUS\n");
+        printf("2. CELSIUS to FAHRENHEIT\n");
+        printf("ENTER THE CHOICE (1 OR 2): ");
+        scanf("%d", &CHOICE);
+        if (CHOICE == 1) 
+        {
+            printf("ENTER THE TEMPERATURE: ");
+            scanf("%lf", &TEMP);
+            double C = FtoC(TEMP);
+            printf("%.2lf°F is %.2lf°C\n", TEMP, C);
+        } 
+        else if (CHOICE == 2) 
+        {
+            printf("ENTER THE TEMPERATURE: ");
+            scanf("%lf", &TEMP);
+            double F = CtoF(TEMP);
+            printf("%.2lf°C is %.2lf°F\n", TEMP, F);
+        } 
+        else 
+        {
+            printf("EXIT AND THE CHOICE IS INVALID! PLEASE ENTER 1 OR 2.\n");
+            break;
+        }
+    }
+    return 0;
+}
