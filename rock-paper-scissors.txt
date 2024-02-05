@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int getComputerChoice() 
+{
+    return rand() % 3;
+}
+
+void displayChoices(int userChoice, int computerChoice) 
+{
+    const char *choices[] = {"ROCK", "PAPER", "SCISSORS"};
+    printf("YOU CHOSE %s.\n", choices[userChoice]);
+    printf("COMPUTER CHOSE %s.\n", choices[computerChoice]);
+}
+
+void determineWinner(int userChoice, int computerChoice) 
+{
+    if (userChoice == computerChoice) 
+    {
+        printf("IT'S A TIE ROUND!\n");
+    } 
+    else if ((userChoice == 0 && computerChoice == 2) ||
+               (userChoice == 1 && computerChoice == 0) ||
+               (userChoice == 2 && computerChoice == 1)) 
+               {
+        printf("YOU WIN!\n");
+    } 
+    else 
+    {
+        printf("COMPUTER WINS!\n");
+    }
+}
+
+int main() 
+{
+    srand(time(NULL));
+    
+    int attempts = 5;
+    
+     while (attempts > 0) {
+        printf("\nLET'S PLAY ROCK-PAPER-SCISSORS!\n");
+        
+        printf("\n0. ROCK\n");
+        printf("1. PAPER\n");
+        printf("2. SCISSORS\n");
+        
+        int userChoice;
+        
+        printf("\nENTER YOUR CHOICE (0-2): ");
+        
+        scanf("%d", &userChoice);
+        
+        if (userChoice < 0 || userChoice > 2) 
+         {
+             printf("EXIT THAT IS A INVALID CHOICE. PLEASE ENTER A NUMBER BETWEEN 0 AND 2.\n");
+             break;
+         }
+         
+         int computerChoice = getComputerChoice();
+         
+         displayChoices(userChoice, computerChoice);
+         determineWinner(userChoice, computerChoice);
+         
+         attempts--;
+     }
+     
+     return 0;
+}
