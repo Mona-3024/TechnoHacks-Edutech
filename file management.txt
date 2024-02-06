@@ -1,0 +1,220 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <dirent.h>
+
+void createFile();
+void deleteFile();
+void copyFile();
+void moveFile();
+void createDirectory();
+void deleteDirectory();
+void copyDirectory(const char *src, const char *dest);
+void moveDirectory(const char *src, const char *dest);
+int main() 
+{
+    int choice;
+    while (1) 
+    {
+        printf("\nFILE AND DIRECTORY MANAGEMENT SYSTEM\n");
+        printf("1. CREATE A FILE\n");
+        printf("2. DELETE A FILE\n");
+        printf("3. COPY A FILE\n");
+        printf("4. MOVE A FILE\n");
+        printf("5. CREATE A DIRECTORY\n");
+        printf("6. DELETE A DIRECTORY\n");
+        printf("7. COPY A DIRECTORY\n");
+        printf("8. MOVE A DIRECTORY\n");
+        printf("9. EXIT\n");
+        printf("ENTER YOUR CHOICE: ");
+        scanf("%d", &choice);
+        switch (choice) 
+        {
+            case 1:
+                createFile();
+                break;
+            case 2:
+                deleteFile();
+                break;
+            case 3:
+                copyFile();
+                break;
+            case 4:
+                moveFile();
+                break;
+            case 5:
+                createDirectory();
+                break;
+            case 6:
+                deleteDirectory();
+                break;
+            case 7: 
+            {
+                char src[100], dest[100];
+                printf("ENTER THE NAME OF THE SOURCE DIRECTORY: ");
+                scanf("%s", src);
+                printf("ENTER THE NAME OF THE DESTINATION DIRECTORY: ");
+                scanf("%s", dest);
+                copyDirectory(src, dest);
+                break;
+            }
+            case 8: 
+            {
+                char src[100], dest[100];
+                printf("ENTER THE NAME OF THE SOURCE DIRECTORY: ");
+                scanf("%s", src);
+                printf("ENTER THE NAME OF THE DESTINATION DIRECTORY: ");
+                scanf("%s", dest);
+                moveDirectory(src, dest);
+                break;
+            }
+            case 9:
+                printf("EXITING PROGRAM...\n");
+                exit(0);
+            default:
+                printf("INVALID CHOICE. PLEASE ENTER A NUMBER BETWEEN 1 AND 9.\n");
+        }
+    }
+    return 0;
+}
+void createFile() 
+{
+    char filename[100];
+    printf("ENTER THE NAME OF THE FILE TO BE CREATED: ");
+    scanf("%s", filename);
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) 
+    {
+        printf("ERROR: UNABLE TO CREATE FILE.\n");
+        return;
+    }
+    fclose(file);
+    printf("FILE '%s' CREATED SUCCESSFULLY.\n", filename);
+}
+void deleteFile() 
+{
+    char filename[100];
+    printf("ENTER THE NAME OF THE FILE TO BE DELETED: ");
+    scanf("%s", filename);
+    if (remove(filename) == 0)
+        printf("FILE '%s' DELETED SUCCESSFULLY.\n", filename);
+    else
+        printf("ERROR: UNABLE TO DELETE FILE'%s'.\n", filename);
+}
+void copyFile() 
+{
+    char source[100], destination[100];
+    printf("ENTER THE NAME OF THE SOURCE FILE: ");
+    scanf("%s", source);
+    printf("ENTER THE NAME OF THE DESTINATION FILE: ");
+    scanf("%s", destination);
+    FILE *sourceFile = fopen(source, "r");
+    FILE *destinationFile = fopen(destination, "w");
+    if (sourceFile == NULL || destinationFile == NULL) 
+    {
+        printf("ERROR: UNABLE TO COPY FILE.\n");
+        return;
+    }
+    int c;
+    while ((c = fgetc(sourceFile)) != EOF)
+        fputc(c, destinationFile);
+    fclose(sourceFile);
+    fclose(destinationFile);
+    printf("FILE '%s' COPIED TO '%s' SUCCESSFULLY.\n", source, destination);
+}
+void moveFile() 
+{
+    char source[100], destination[100];
+    printf("ENTER THE NAME OF THE SOURCE FILE: ");
+    scanf("%s", source);
+    printf("ENTER THE NAME OF THE DESTINATION FILE: ");
+    scanf("%s", destination);
+    if (rename(source, destination) == 0)
+        printf("FILE '%s' MOVED TO '%s' SUCCESSFULLY.\n", source, destination);
+    else
+        printf("ERROR: UNABLE TO MOVE FILE.\n");
+}
+void createDirectory() 
+{
+    char dirname[100];
+    printf("ENTER THE NAME OF THE DIRECTORY TO BE CREATED: ");
+    scanf("%s", dirname);
+    if (mkdir(dirname, 0777) == -1) {
+        printf("ERROR: UNABLE TO CREATE A DIRECTORY.\n");
+        return;
+    }
+    printf("DIRECTORY '%s' CREATED SUCCESSFULLY.\n", dirname);
+}
+void deleteDirectory() 
+{
+    char dirname[100];
+    printf("ENTER THE NAME OF THE DIRECTORY TO BE DELETED: ");
+    scanf("%s", dirname);
+    if (rmdir(dirname) == 0)
+        printf("DIRECTORY '%s' DELETED SUCCESSFULLY.\n", dirname);
+    else
+        printf("ERROR: UNABLE TO DELETE DIRECTORY '%s'.\n", dirname);
+}
+void copyDirectory(const char *src, const char *dest) 
+{
+    DIR *dp;
+    struct dirent *entry;
+    struct stat statbuf;
+    char srcPath[1024];
+    char destPath[1024];
+    if ((dp = opendir(src)) == NULL) 
+    {
+        fprintf(stderr, "CANNOT OPEN DIRECTORY: %s\n", src);
+        return;
+    }
+    mkdir(dest, 0755);
+    while ((entry = readdir(dp)) != NULL) 
+    {
+        sprintf(srcPath, "%s/%s", src, entry->d_name);
+        sprintf(destPath, "%s/%s", dest, entry->d_name);
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+        if (lstat(srcPath, &statbuf) == -1) 
+        {
+            fprintf(stderr, "CANNOT GET FILE STATUS: %s\n", srcPath);
+            continue;
+        }
+        if (S_ISDIR(statbuf.st_mode)) 
+        {
+            copyDirectory(srcPath, destPath);
+        } 
+        else 
+        {
+            FILE *srcFile, *destFile;
+            char buffer[1024];
+            size_t bytesRead;
+            if ((srcFile = fopen(srcPath, "rb")) == NULL) 
+            {
+                fprintf(stderr, "CANNOT OPEN SOURCE FILE: %s\n", srcPath);
+                continue;
+            }
+            if ((destFile = fopen(destPath, "wb")) == NULL) 
+            {
+                fprintf(stderr, "CANNOT OPEN DESTINATION FILE: %s\n", destPath);
+                fclose(srcFile);
+                continue;
+            }
+            while ((bytesRead = fread(buffer, 1, sizeof(buffer), srcFile)) > 0) 
+            {
+                fwrite(buffer, 1, bytesRead, destFile);
+            }
+            fclose(srcFile);
+            fclose(destFile);
+        }
+    }
+    closedir(dp);
+}
+void moveDirectory(const char *src, const char *dest) 
+{
+    copyDirectory(src, dest);
+    deleteDirectory(src);
+}
